@@ -1596,8 +1596,9 @@ class Cursor:
                     c_buf_len = 1
 
                 elif param_types[col_num][0] == 'D': #Decimal
-                    sign = param_val.as_tuple()[0] == 0 and '+' or '-'
-                    digit_string = ''.join([str(x) for x in param_val.as_tuple()[1]])
+                    decimal_tuple = param_val.as_tuple()
+                    sign = decimal_tuple[0] == 0 and '+' or '-'
+                    digit_string = ''.join([str(x) for x in decimal_tuple[1]])
                     digit_num, dec_num = param_types[col_num][1]
                     if dec_num > 0:
                         # has decimal
@@ -1609,8 +1610,7 @@ class Cursor:
                         v = ''.join((sign, left_part,'.', right_part))
                     else:
                         # no decimal
-                        v = ''.join((digit_string, '0' * (0 - dec_num)))
-
+                        v = ''.join((sign, digit_string, '0' * (0 - dec_num)))
                     if py_v3:
                         c_char_buf = bytes(v,'ascii')
                     else:
