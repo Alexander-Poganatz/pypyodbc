@@ -1421,7 +1421,16 @@ class SqlServerTestCase(unittest.TestCase):
         
         self.cursor.execute("select top 1 name from sysobjects where name = ?", ("bogus",))
         self.cursor.fetchone()
- 
+
+    def test_varchar_max(self):
+        "NVARCHAR max returns size 0 on newer drivers so not all data may be fetched if not handled"
+
+        text = 'a' * 3800
+        for type in ('VARCHAR', 'NVARCHAR'):
+            self.cursor.execute(f"SELECT CAST('{text}' AS {type}(MAX)) AS T;")
+            data_from_db = self.cursor.fetchone()[0]
+
+            self.assertEqual(data_from_db, text, f"test_nvarchar_max failed for type {type}")
 
 
 def main():
