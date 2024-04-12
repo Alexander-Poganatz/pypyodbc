@@ -1751,7 +1751,7 @@ class Cursor:
             # if the size of the buffer is very long, do not bind
             # because a large buffer decrease performance, and sometimes you only get a NULL value.
             # in that case use sqlgetdata instead.
-            if col_size >= 1024:
+            if col_size >= 1024 or (col_size <= 0 and col_sql_data_type in (SQL_VARCHAR, SQL_WVARCHAR)):
                 dynamic_length = True
 
             alloc_buffer = SQL_data_type_dict[col_sql_data_type][3](total_buf_len)
