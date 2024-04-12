@@ -35,6 +35,9 @@ from build.lib import pypyodbc
 
 _TESTSTR = '0123456789-abcdefghijklmnopqrstuvwxyz-'
 
+def is_sqlserver_2000_driver(connection: pypyodbc.Connection):
+    return "SQLSRV32.DLL" == connection.getinfo(pypyodbc.SQL_DRIVER_NAME)
+
 def _generate_test_string(length):
     """
     Returns a string of `length` characters, constructed by repeating _TESTSTR as necessary.
@@ -591,6 +594,11 @@ class SqlServerTestCase(unittest.TestCase):
         self.assertEqual(result, rounded)
 
     def test_date(self):
+        
+        if is_sqlserver_2000_driver(self.cnxn):
+            self.skipTest("SQL Server driver does not support date, results are string")
+            return
+        
         ver = self.get_sqlserver_version()
         if ver < 10:            # 2008 only
             return              # so pass / ignore
@@ -605,6 +613,12 @@ class SqlServerTestCase(unittest.TestCase):
         self.assertEqual(value, result)
 
     def test_time(self):
+        
+        if is_sqlserver_2000_driver(self.cnxn):
+            self.skipTest("SQL Server driver does not support time, results are string")
+            return
+        
+        
         ver = self.get_sqlserver_version()
         if ver < 10:            # 2008 only
             return              # so pass / ignore
@@ -623,6 +637,11 @@ class SqlServerTestCase(unittest.TestCase):
         self.assertEqual(value, result)
 
     def test_datetime2(self):
+        
+        if is_sqlserver_2000_driver(self.cnxn):
+            self.skipTest("SQL Server driver does not support datetime2, results are string")
+            return
+        
         ver = self.get_sqlserver_version()
         if ver < 10:            # 2008 only
             return              # so pass / ignore
