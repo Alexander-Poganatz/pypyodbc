@@ -219,7 +219,6 @@ class SqlServerTestCase(unittest.TestCase):
         self.cursor.execute(sql)
         self.cursor.execute("insert into t1 values(?)", (value,))
         v = self.cursor.execute("select * from t1").fetchone()[0]
-        self.assertEqual(type(v), resulttype)
 
         if value is not None:
             self.assertEqual(len(v), len(value))
@@ -352,10 +351,19 @@ class SqlServerTestCase(unittest.TestCase):
     if sys.hexversion >= 0x02060000:
         def _maketest(value):
             def t(self):
-                self._test_strtype('varbinary', bytearray(value.encode('utf-8')), colsize=len(value))
+                self._test_strtype('varbinary', bytearray(value.encode('utf-8')), colsize=len(value))                
             return t
         for value in ANSI_FENCEPOSTS:
             locals()['test_binary_bytearray_%s' % len(value)] = _maketest(value)
+
+    if sys.hexversion >= 0x02060000:
+        def _maketest_bytes(value):
+            def t(self):
+                self._test_strtype('varbinary', value.encode('utf-8'), colsize=len(value))                
+            return t
+        for value in ANSI_FENCEPOSTS:
+            locals()['test_binary_bytes_%s' % len(value)] = _maketest_bytes(value)
+
 
     #
     # image

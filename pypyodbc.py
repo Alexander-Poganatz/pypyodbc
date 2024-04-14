@@ -39,20 +39,12 @@ from decimal import Decimal
 py_ver = sys.version[:3]
 py_v3 = py_ver >= '3.0'
 
-if py_v3:
-    long = int
-    unicode = str
-    str_8b = bytes
-    buffer = memoryview
-    BYTE_1 = bytes('1','ascii')
-    use_unicode = True
-else:
-    str_8b = str
-    BYTE_1 = '1'
-    use_unicode = False
-if py_ver < '2.6':
-    bytearray = str
-
+# Aliases made for some python 2 compatibility. Remove later.
+long = int
+unicode = str
+buffer = memoryview
+BYTE_1 = b'1'
+use_unicode = True
 
 if not hasattr(ctypes, 'c_ssize_t'):
     if ctypes.sizeof(ctypes.c_uint) == ctypes.sizeof(ctypes.c_void_p):
@@ -951,7 +943,8 @@ SQLEndTran = ODBC_API.SQLEndTran
 # Set alias for beter code readbility or performance.
 NO_FREE_STATEMENT = 0
 FREE_STATEMENT = 1
-BLANK_BYTE = str_8b()
+BLANK_BYTE = bytes()
+
 
 def ctrl_err(ht, h, val_ret, ansi):
     """Classify type of ODBC error from (type of handle, handle, return value)
@@ -961,10 +954,7 @@ def ctrl_err(ht, h, val_ret, ansi):
         state = create_buffer(22)
         Message = create_buffer(1024*4)
         ODBC_func = ODBC_API.SQLGetDiagRec
-        if py_v3:
-            raw_s = lambda s: bytes(s,'ascii')
-        else:
-            raw_s = str_8b
+        raw_s = lambda s: bytes(s,'ascii')
     else:
         state = create_buffer_u(24)
         Message = create_buffer_u(1024*4)
@@ -1150,7 +1140,7 @@ def get_type(v):
             return  ('U',(len(v)//1000+1)*1000*2)
         else:
             return ('u',)
-    elif isinstance(v, (str_8b,str)):
+    elif isinstance(v, str):
         if len(v) >= 255:
             return  ('S',(len(v)//1000+1)*1000)
         else:
@@ -1178,7 +1168,7 @@ def get_type(v):
         return ('d',)
     elif isinstance(v, datetime.time):
         return ('t',)
-    elif isinstance (v, (bytearray, buffer)):
+    elif isinstance (v, (bytes, bytearray, buffer)):
         return ('bi',(len(v)//1000+1)*1000)
 
     return type(v)
@@ -1618,7 +1608,7 @@ class Cursor:
                     c_buf_len = len(c_char_buf)
 
                 elif param_types[col_num][0] == 'bi':
-                    c_char_buf = str_8b(param_val)
+                    c_char_buf = bytes(param_val)
                     c_buf_len = len(c_char_buf)
 
                 else:
@@ -1626,7 +1616,7 @@ class Cursor:
 
 
                 if param_types[col_num][0] == 'bi':
-                    param_buffer.raw = str_8b(param_val)
+                    param_buffer.raw = bytes(param_val)
 
                 else:
                     #print (type(param_val),param_buffer, param_buffer.value)
