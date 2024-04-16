@@ -32,6 +32,7 @@ from datetime import datetime, date, time
 from os.path import join, getsize, dirname, abspath
 from testutils import *
 from build.lib import pypyodbc
+import uuid
 
 _TESTSTR = '0123456789-abcdefghijklmnopqrstuvwxyz-'
 
@@ -171,10 +172,11 @@ class SqlServerTestCase(unittest.TestCase):
 
     def test_guid(self):
         self.cursor.execute("create table t1(g1 uniqueidentifier)")
-        self.cursor.execute("insert into t1 values (newid())")
+        test_value = uuid.uuid4()
+        self.cursor.execute("insert into t1 values (?)", (test_value,))
         v = self.cursor.execute("select * from t1").fetchone()[0]
-        self.assertEqual(type(v), str)
-        self.assertEqual(len(v), 36)
+        self.assertEqual(type(v), uuid.UUID)
+        self.assertEqual(v, test_value)
 
     def test_nextset(self):
         self.cursor.execute("create table t1(i int)")
