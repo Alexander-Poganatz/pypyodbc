@@ -34,7 +34,7 @@ DEBUG = 0
 
 import sys, os, datetime, ctypes, threading
 from decimal import Decimal
-
+from uuid import UUID
 
 py_ver = sys.version[:3]
 py_v3 = py_ver >= '3.0'
@@ -618,7 +618,7 @@ def Decimal_cvt(x):
     return Decimal(x)
 
 def UUID_cvt(x):
-    return x.decode('ascii')
+    return UUID(x.decode('ascii'))
 
 bytearray_cvt = bytearray
 if sys.platform == 'cli':
@@ -652,7 +652,7 @@ SQL_TINYINT         : (int,                 int,                        SQL_C_CH
 SQL_BIT             : (bool,                lambda x:x == BYTE_1,       SQL_C_CHAR,         create_buffer,      2     ,         False         ),
 SQL_WCHAR           : (unicode,             lambda x: x,                SQL_C_WCHAR,        create_buffer_u,    2048  ,         False          ),
 SQL_WVARCHAR        : (unicode,             lambda x: x,                SQL_C_WCHAR,        create_buffer_u,    2048  ,         False          ),
-SQL_GUID            : (str,                 UUID_cvt,                   SQL_C_CHAR,         create_buffer,      128   ,         False         ),
+SQL_GUID            : (str,                 UUID_cvt,                   SQL_C_CHAR,         create_buffer,      256   ,         False         ),
 SQL_WLONGVARCHAR    : (unicode,             lambda x: x,                SQL_C_WCHAR,        create_buffer_u,    20500 ,         True          ),
 SQL_TYPE_DATE       : (datetime.date,       dt_cvt,                     SQL_C_CHAR,         create_buffer,      30    ,         False         ),
 SQL_TYPE_TIME       : (datetime.time,       tm_cvt,                     SQL_C_CHAR,         create_buffer,      20    ,         False         ),
@@ -1139,7 +1139,7 @@ BinaryNull = BinaryNullType()
 # 'b' for bool, 'U' for long unicode string, 'u' for short unicode string
 # 'S' for long 8 bit string, 's' for short 8 bit string, 'l' for big integer, 'i' for normal integer
 # 'f' for float, 'D' for Decimal, 't' for datetime.time, 'd' for datetime.datetime, 'dt' for datetime.datetime
-# 'bi' for binary
+# 'bi' for binary, 'g' for UUID
 def get_type(v):
 
     if isinstance(v, bool):
@@ -1180,6 +1180,8 @@ def get_type(v):
         return ('t',)
     elif isinstance (v, (bytearray, buffer)):
         return ('bi',(len(v)//1000+1)*1000)
+    elif isinstance(v, UUID):
+        return ('g',)
 
     return type(v)
 
@@ -1455,8 +1457,11 @@ class Cursor:
                 sql_type = SQL_LONGVARBINARY
                 buf_size = param_types[col_num][1]#len(self._inputsizers)>col_num and self._inputsizers[col_num] or 20500
                 ParameterBuffer = create_buffer(buf_size)
-
-
+            elif param_types[col_num][0] == 'g':
+                sql_c_type = SQL_C_GUID
+                sql_type = SQL_GUID
+                buf_size = SQL_data_type_dict[sql_type][4]
+                ParameterBuffer = create_buffer(buf_size)
             else:
                 sql_c_type = SQL_C_CHAR
                 sql_type = SQL_LONGVARCHAR
@@ -1619,6 +1624,9 @@ class Cursor:
 
                 elif param_types[col_num][0] == 'bi':
                     c_char_buf = str_8b(param_val)
+                    c_buf_len = len(c_char_buf)
+                elif param_types[col_num][0] == 'g':
+                    c_char_buf = param_val.bytes_le
                     c_buf_len = len(c_char_buf)
 
                 else:
