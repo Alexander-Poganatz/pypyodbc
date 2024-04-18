@@ -1,21 +1,18 @@
-pypyodbc
+snekodbc
 ========
 
 A pure Python Cross Platform ODBC interface module
 
 
-**This is the new GitHub homepage of pypyodbc**  
+**This is a fork of pypyodbc**  
 
-Old repository was https://github.com/jiangwen365/pypyodbc/
-
-Also check out the [Wiki](https://github.com/pypyodbc/pypyodbc/wiki) and [Version History](https://github.com/pypyodbc/pypyodbc/wiki/Version-History)
+[Pypyodbc Version History](https://github.com/pypyodbc/pypyodbc/wiki/Version-History)
 
 
 Features
 --------
 
-  * One pure Python script, runs on CPython / IronPython / PyPy , Python 3.3 / 2.4 / 2.5 / 2.6 / 2.7 , Win / Linux / macOS, 32 / 64 bit: [How to use pypyodbc on MacOS OSX](https://github.com/pypyodbc/pypyodbc/wiki/How-to-use-pypyodbc-on-MacOS-OSX)
-  * Almost totally same usage as pyodbc (can be seen as a re-implementation of pyodbc in pure Python via ctypes)
+  * One pure Python script, runs on CPython / IronPython / PyPy , Python 3.4 , Win / Linux / macOS, 32 / 64 bit
   * Simple - the whole module is implemented in a single python script with less than 3000 lines
   * [Built-in Access MDB file creation and compression functions](https://github.com/pypyodbc/pypyodbc/wiki/Access-MDB-support) on Windows 
 
@@ -23,7 +20,7 @@ Simply try pypyodbc:
 
 ```python
 # Microsoft Access DB
-import pypyodbc 
+import snekodbc 
 
 connection = pypyodbc.win_create_mdb('D:\\database.mdb')
 
@@ -34,7 +31,7 @@ connection.close()
 
 ```python
 #SQL Server 2000/2005/2008 (and probably 2012 and 2014)
-import pypyodbc as pyodbc # you could alias it to existing pyodbc code (not every code is compatible)
+import snekodbc as pyodbc # you could alias it to existing pyodbc code (not every code is compatible)
 db_host = 'serverhost'
 db_name = 'database'
 db_user = 'username'
@@ -55,7 +52,7 @@ connStr = (
     r'UID=sa;'
     r'PWD=sapassword;'
     )
-db = pypyodbc.connect(connStr)
+db = pyodbc.connect(connStr)
 cursor = db.cursor()
 
 # Sample with just a raw query:
@@ -94,16 +91,16 @@ db.close()
 
 How to use it without install (the latest version from here)
 --------------------------------------------
-Just copy the latest pypyodbc.py downloaded from this repository on your project folder and import the module.
+Just copy the latest snekodbc.py downloaded from this repository on your project folder and import the module.
 
 Install
 -------
 
-If you have pip available (keep in mind that the version on pypi may be old):
+If you have pip:
 
-    pip install pypyodbc
+    pip install <todo, put in when released> 
 
-Or get the latest pypyodbc.py script from GitHub (Main Development site) <https://github.com/pypyodbc/pypyodbc>
+Or get the latest pypyodbc.py script from GitHub (Main Development site) <https://github.com/Alexander-Poganatz/snekodbc>
 
     python setup.py install
 
