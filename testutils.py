@@ -37,7 +37,7 @@ def add_to_path():
 
 
 def print_library_info(cnxn):
-    import pypyodbc
+    from build.lib import snekodbc as pypyodbc
     print('python:  %s' % sys.version)
     print('pypyodbc:  %s %s' % (pypyodbc.version, os.path.abspath(pypyodbc.__file__)))
     print('odbc:    %s' % cnxn.getinfo(pypyodbc.SQL_ODBC_VER))

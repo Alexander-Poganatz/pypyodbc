@@ -31,7 +31,7 @@ from decimal import Decimal
 from datetime import datetime, date, time
 from os.path import join, getsize, dirname, abspath
 from testutils import *
-from build.lib import pypyodbc
+from build.lib import snekodbc as pypyodbc
 import uuid
 
 _TESTSTR = '0123456789-abcdefghijklmnopqrstuvwxyz-'

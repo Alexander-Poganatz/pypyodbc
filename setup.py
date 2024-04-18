@@ -3,19 +3,15 @@ try:
 except ImportError:
     from distutils.core import setup
 
-import pypyodbc
-
 setup(
-    name='pypyodbc',
-    version=pypyodbc.version,
+    name='snekodbc',
+    version="0.5.0",
     description='A Pure Python ctypes ODBC module.',
-    author='jiangwen365',
-    author_email='jiangwen365@gmail.com',
-    url='https://github.com/pypyodbc/pypyodbc',
-    py_modules=['pypyodbc'],
-    long_description=
-        "A Pure Python ctypes ODBC module compatible with PyPy and almost"
-        " totally same usage as pyodbc.",
+    author='Alexander-Poganatz',
+    author_email='alex.poga@outlook.com',
+    url='https://github.com/Alexander-Poganatz/snekodbc',
+    py_modules=['snekodbc'],
+    long_description="A Pure Python ctypes ODBC module compatible with PyPy",
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",
