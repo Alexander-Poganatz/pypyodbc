@@ -7,22 +7,6 @@ usage: %prog [options] connection_string
 Unit tests for SQL Server.  To use, pass a connection string as the parameter.
 The tests will create and drop tables t1 and t2 as necessary.
 
-These run using the version from the 'build' directory, not the version
-installed into the Python directories.  You must run python setup.py build
-before running the tests.
-
-You can also put the connection string into a setup.cfg file in the root of the project
-(the same one setup.py would use) like so:
-
-  [sqlservertests]
-  connection-string=DRIVER={SQL Server};SERVER=localhost;UID=uid;PWD=pwd;DATABASE=db
-
-The connection string above will use the 2000/2005 driver, even if SQL Server 2008
-is installed:
-
-  2000: DRIVER={SQL Server}
-  2005: DRIVER={SQL Server}
-  2008: DRIVER={SQL Server Native Client 10.0}
 """
 
 import sys, os
@@ -31,8 +15,11 @@ from decimal import Decimal
 from datetime import datetime, date, time
 from os.path import join, getsize, dirname, abspath
 from testutils import *
-from build.lib import snekodbc as pypyodbc
+# from .. import snekodbc as pypyodbc
 import uuid
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import snekodbc as pypyodbc
 
 _TESTSTR = '0123456789-abcdefghijklmnopqrstuvwxyz-'
 

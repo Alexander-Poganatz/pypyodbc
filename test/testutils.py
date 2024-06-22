@@ -3,41 +3,9 @@ import os, sys, platform
 from os.path import join, dirname, abspath, basename
 import unittest
 
-def add_to_path():
-    """
-    Prepends the build directory to the path so that newly built pypyodbc libraries are used, allowing it to be tested
-    without installing it.
-    """
-    # Put the build directory into the Python path so we pick up the version we just built.
-    #
-    # To make this cross platform, we'll search the directories until we find the .pyd file.
-
-    import imp
-
-    library_exts  = [ t[0] for t in imp.get_suffixes() if t[-1] == imp.C_EXTENSION ]
-    library_names = [ 'pypyodbc%s' % ext for ext in library_exts ]
-
-    # Only go into directories that match our version number. 
-
-    dir_suffix = '-%s.%s' % (sys.version_info[0], sys.version_info[1])
-
-    build = join(dirname(dirname(abspath(__file__))), 'build')
-
-    for root, dirs, files in os.walk(build):
-        for d in dirs[:]:
-            if not d.endswith(dir_suffix):
-                dirs.remove(d)
-
-        for name in library_names:
-            if name in files:
-                sys.path.insert(0, root)
-                return
-                
-    print >>sys.stderr, 'Did not find the pypyodbc library in the build directory.  Will use an installed version.'
-
 
 def print_library_info(cnxn):
-    from build.lib import snekodbc as pypyodbc
+    import snekodbc as pypyodbc
     print('python:  %s' % sys.version)
     print('pypyodbc:  %s %s' % (pypyodbc.version, os.path.abspath(pypyodbc.__file__)))
     print('odbc:    %s' % cnxn.getinfo(pypyodbc.SQL_ODBC_VER))

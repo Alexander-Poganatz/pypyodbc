@@ -2,7 +2,7 @@
 
 import datetime
 import unittest
-import pypyodbc
+import snekodbc
 
 
 class TestGetType(unittest.TestCase):
@@ -23,4 +23,4 @@ class TestGetType(unittest.TestCase):
         )
         for name, input_type, expected in cases:
             with self.subTest(name=name):
-                self.assertEqual(expected, pypyodbc.get_type(input_type))
+                self.assertEqual(expected, snekodbc.get_type(input_type))

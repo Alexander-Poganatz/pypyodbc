@@ -12,7 +12,6 @@ A pure Python Cross Platform ODBC interface module
 Features
 --------
 
-  * One pure Python script, runs on CPython / IronPython / PyPy , Python 3.4 , Win / Linux / macOS, 32 / 64 bit
   * Simple - the whole module is implemented in a single python script with less than 3000 lines
   * [Built-in Access MDB file creation and compression functions](https://github.com/pypyodbc/pypyodbc/wiki/Access-MDB-support) on Windows 
 
